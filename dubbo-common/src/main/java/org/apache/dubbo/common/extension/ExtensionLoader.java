@@ -387,6 +387,7 @@ public class ExtensionLoader<T> {
         if (StringUtils.isEmpty(name)) {
             throw new IllegalArgumentException("Extension name == null");
         }
+        // 注解中配置的默认实现
         if ("true".equals(name)) {
             return getDefaultExtension();
         }

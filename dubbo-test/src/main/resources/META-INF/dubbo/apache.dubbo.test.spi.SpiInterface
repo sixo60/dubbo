@@ -1,0 +1,2 @@
+my=apache.dubbo.test.spi.SpiInterfaceImpl
+spiIoc=apache.dubbo.test.spi.SpiIoc
