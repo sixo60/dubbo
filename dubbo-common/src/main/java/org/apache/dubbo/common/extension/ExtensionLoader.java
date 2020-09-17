@@ -391,12 +391,14 @@ public class ExtensionLoader<T> {
         if ("true".equals(name)) {
             return getDefaultExtension();
         }
+        // 从缓存获取
         final Holder<Object> holder = getOrCreateHolder(name);
         Object instance = holder.get();
         if (instance == null) {
             synchronized (holder) {
                 instance = holder.get();
                 if (instance == null) {
+                    //创建实例
                     instance = createExtension(name);
                     holder.set(instance);
                 }
@@ -596,6 +598,7 @@ public class ExtensionLoader<T> {
 
     @SuppressWarnings("unchecked")
     private T createExtension(String name) {
+        //获取class对象
         Class<?> clazz = getExtensionClasses().get(name);
         if (clazz == null) {
             throw findException(name);
@@ -603,9 +606,11 @@ public class ExtensionLoader<T> {
         try {
             T instance = (T) EXTENSION_INSTANCES.get(clazz);
             if (instance == null) {
+                //实例化
                 EXTENSION_INSTANCES.putIfAbsent(clazz, clazz.newInstance());
                 instance = (T) EXTENSION_INSTANCES.get(clazz);
             }
+            //注入set方法
             injectExtension(instance);
             Set<Class<?>> wrapperClasses = cachedWrapperClasses;
             if (CollectionUtils.isNotEmpty(wrapperClasses)) {
@@ -613,6 +618,7 @@ public class ExtensionLoader<T> {
                     instance = injectExtension((T) wrapperClass.getConstructor(type).newInstance(instance));
                 }
             }
+            //执行init
             initExtension(instance);
             return instance;
         } catch (Throwable t) {
@@ -633,6 +639,7 @@ public class ExtensionLoader<T> {
 
         try {
             for (Method method : instance.getClass().getMethods()) {
+                // 如果是set方法，继续执行
                 if (!isSetter(method)) {
                     continue;
                 }
@@ -648,7 +655,9 @@ public class ExtensionLoader<T> {
                 }
 
                 try {
+                    //属性名称
                     String property = getSetterProperty(method);
+                    // 获悉需要注入的对象  添加了Adaptive注解的spi接口实现
                     Object object = objectFactory.getExtension(pt, property);
                     if (object != null) {
                         method.invoke(instance, object);
@@ -666,6 +675,7 @@ public class ExtensionLoader<T> {
     }
 
     private void initExtension(T instance) {
+        // 如果实现了Lifecycle 执行init
         if (instance instanceof Lifecycle) {
             Lifecycle lifecycle = (Lifecycle) instance;
             lifecycle.initialize();
