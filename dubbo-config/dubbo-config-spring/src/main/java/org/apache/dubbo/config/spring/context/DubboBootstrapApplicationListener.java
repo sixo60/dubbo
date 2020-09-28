@@ -56,6 +56,8 @@ public class DubboBootstrapApplicationListener extends OneTimeExecutionApplicati
     }
 
     private void onContextRefreshedEvent(ContextRefreshedEvent event) {
+        //spring 容器所有bean加载完成，监听到refresh结束事件
+        //启动dubbo
         dubboBootstrap.start();
     }
 

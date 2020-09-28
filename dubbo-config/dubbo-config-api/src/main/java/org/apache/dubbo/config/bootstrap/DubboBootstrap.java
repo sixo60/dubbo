@@ -736,11 +736,13 @@ public class DubboBootstrap extends GenericEventListener {
      */
     public DubboBootstrap start() {
         if (started.compareAndSet(false, true)) {
+            //初始化操作
             initialize();
             if (logger.isInfoEnabled()) {
                 logger.info(NAME + " is starting...");
             }
             // 1. export Dubbo Services
+            // 服务导出
             exportServices();
 
             // Not only provider register
@@ -901,6 +903,7 @@ public class DubboBootstrap extends GenericEventListener {
     }
 
     private void exportServices() {
+        // export serviceConfig
         configManager.getServices().forEach(sc -> {
             // TODO, compatible with ServiceConfig.export()
             ServiceConfig serviceConfig = (ServiceConfig) sc;
@@ -909,6 +912,7 @@ public class DubboBootstrap extends GenericEventListener {
             if (exportAsync) {
                 ExecutorService executor = executorRepository.getServiceExporterExecutor();
                 Future<?> future = executor.submit(() -> {
+                    // 服务导出
                     sc.export();
                 });
                 asyncExportingFutures.add(future);
