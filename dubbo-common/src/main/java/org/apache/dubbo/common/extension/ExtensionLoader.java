@@ -545,6 +545,7 @@ public class ExtensionLoader<T> {
     }
 
     @SuppressWarnings("unchecked")
+    //nb  该方法是实际生成的是一个代理适配器，根据spi 类型去调用对应的类
     public T getAdaptiveExtension() {
         Object instance = cachedAdaptiveInstance.get();
         if (instance == null) {
@@ -612,7 +613,9 @@ public class ExtensionLoader<T> {
             }
             //注入set方法
             injectExtension(instance);
+            //包装类
             Set<Class<?>> wrapperClasses = cachedWrapperClasses;
+            //如果有包装类，对对象进行包装
             if (CollectionUtils.isNotEmpty(wrapperClasses)) {
                 for (Class<?> wrapperClass : wrapperClasses) {
                     instance = injectExtension((T) wrapperClass.getConstructor(type).newInstance(instance));
@@ -861,7 +864,7 @@ public class ExtensionLoader<T> {
         }
         if (clazz.isAnnotationPresent(Adaptive.class)) {
             cacheAdaptiveClass(clazz);
-        } else if (isWrapperClass(clazz)) {
+        } else if (isWrapperClass(clazz)) {//判断是否包装类
             cacheWrapperClass(clazz);
         } else {
             clazz.getConstructor();
@@ -956,6 +959,7 @@ public class ExtensionLoader<T> {
      */
     private boolean isWrapperClass(Class<?> clazz) {
         try {
+            //判断条件 带有参数的public构造器  且 构造器入参是需要包装的SPI接口
             clazz.getConstructor(type);
             return true;
         } catch (NoSuchMethodException e) {
