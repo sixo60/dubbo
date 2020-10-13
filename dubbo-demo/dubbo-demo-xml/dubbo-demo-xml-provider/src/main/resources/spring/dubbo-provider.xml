@@ -29,7 +29,9 @@
     <dubbo:protocol name="dubbo"/>
 
     <bean id="demoService" class="org.apache.dubbo.demo.provider.DemoServiceImpl"/>
+    <bean id="greetingService" class="org.apache.dubbo.demo.provider.GreetingServiceImpl"/>
 
     <dubbo:service interface="org.apache.dubbo.demo.DemoService" ref="demoService"/>
+    <dubbo:service interface="org.apache.dubbo.demo.GreetingService" ref="greetingService"/>
 
 </beans>

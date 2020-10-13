@@ -352,7 +352,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             addFailedUnsubscribed(url, listener);
         }
     }
-
+    //zk 节点监听
     @Override
     protected void notify(URL url, NotifyListener listener, List<URL> urls) {
         if (url == null) {
