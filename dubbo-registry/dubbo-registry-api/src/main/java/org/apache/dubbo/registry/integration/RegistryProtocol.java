@@ -169,7 +169,9 @@ public class RegistryProtocol implements Protocol {
     }
 
     public void register(URL registryUrl, URL registeredProviderUrl) {
+        //zookeeper://127.0.0.1:2181/。。。
         Registry registry = registryFactory.getRegistry(registryUrl);
+        //注册 ZookeeperRegistry
         registry.register(registeredProviderUrl);
 
         ProviderModel model = ApplicationModel.getProviderModel(registeredProviderUrl.getServiceKey());
@@ -204,6 +206,7 @@ public class RegistryProtocol implements Protocol {
         final URL registeredProviderUrl = getUrlToRegistry(providerUrl, registryUrl);
         // decide if we need to delay publish
         boolean register = providerUrl.getParameter(REGISTER_KEY, true);
+        //注册到注册中心
         if (register) {
             register(registryUrl, registeredProviderUrl);
         }
